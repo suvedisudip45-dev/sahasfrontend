@@ -13,8 +13,8 @@ const Services = [
     headerImage: mblBankingLogo,
     description: "साहस सहकारीको आधुनिक मोबाइल बैंकिङ सेवामार्फत अब जुनसुकै ठाउँबाट २४ सै घण्टा सुरक्षित रूपमा आफ्नो खाता सञ्चालन गर्नुहोस्। खाताको मौज्दात (Balance) जाँच गर्न, रकम ट्रान्सफर गर्न, बिजुली, खानेपानी, इन्टरनेटको बिल तिर्न र मोबाइल टप-अप गर्न सकिने अत्यन्तै सहज र भरपर्दो सुविधा।\n\nआधुनिक प्रविधि र बलियो सुरक्षा प्रणालीसहितको यो सेवाले तपाईंको बहुमूल्य समयको बचत गर्दै सहकारी सेवालाई तपाईंको हातको औंलामा ल्याइदिएको छ।\n\nहाम्रो आधिकारिक मोबाइल एप डाउनलोड गर्न तल दिइएको लिंक प्रयोग गर्नुहोस्:",
     id: "1",
-    link1: "https://play.google.com/store/apps/details?id=com.infodev.mSahas&pcampaignid=web_share",
-    link2: "https://play.google.com/store/apps/details?id=com.infodev.dabali&pli=1"
+    link1: "https://play.google.com/store/apps/details?id=com.infodev.mSahasApp",
+    link2: "https://apps.apple.com/np/app/info-mdabali/id1338667402"
   },
   {
     title: "एसएमएस बैंकिङ सेवा",

@@ -38,12 +38,12 @@ function MembersDetail() {
         const data = result[0]; // Adjust if backend returns different format
         setUpdatedDate(data.academicYear);
         setFinancialData([
-          { label: 'सदस्यहरू', count: data.members, icon: <BsPersonFill size={50} color={color} /> },
-          { label: 'चुक्ता पुँजी ', count: data.sharecapital, icon: <BsCashCoin size={50} color={color} /> },
-          { label: 'जगेडा कोष', count: data.reservefund, icon: <BsPiggyBank size={50} color={color} /> },
-          { label: 'निक्षेप', count: data.deposit, icon: <BsBank size={50} color={color} /> },
-          { label: 'कर्जा', count: data.loan, icon: <BsCreditCard2FrontFill size={50} color={color} /> },
-          { label: 'कुल सम्पत्ति', count: data.totalassets, icon: <BsBarChartFill size={50} color={color} /> },
+          { label: 'Members', count: data.members, icon: <BsPersonFill size={50} color={color} /> },
+          { label: 'Share Capital ', count: data.sharecapital, icon: <BsCashCoin size={50} color={color} /> },
+          { label: 'Reserve Fund', count: data.reservefund, icon: <BsPiggyBank size={50} color={color} /> },
+          { label: 'Deposit', count: data.deposit, icon: <BsBank size={50} color={color} /> },
+          { label: 'Loan', count: data.loan, icon: <BsCreditCard2FrontFill size={50} color={color} /> },
+          { label: 'Total Assets', count: data.totalassets, icon: <BsBarChartFill size={50} color={color} /> },
         ]);
       } catch (error) {
         console.error("Unable to fetch financial data:", error);
