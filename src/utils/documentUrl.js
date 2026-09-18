@@ -1,13 +1,30 @@
 export function normalizeCloudinaryDocumentUrl(filePath) {
   if (!filePath || typeof filePath !== 'string') return filePath;
 
-  if (!/^https?:\/\//i.test(filePath)) return filePath;
+  const normalizedUrl = filePath.trim();
+  if (!/^https?:\/\//i.test(normalizedUrl)) return normalizedUrl;
 
-  if (filePath.includes('cloudinary.com') && filePath.includes('/image/upload/')) {
-    return filePath.replace('/image/upload/', '/raw/upload/');
+  if (normalizedUrl.includes('cloudinary.com')) {
+    if (normalizedUrl.includes('/image/upload/')) {
+      return normalizedUrl.replace('/image/upload/', '/raw/upload/');
+    }
+
+    if (normalizedUrl.includes('/image/upload')) {
+      return normalizedUrl.replace('/image/upload', '/raw/upload');
+    }
   }
 
-  return filePath;
+  return normalizedUrl;
+}
+
+export function buildPdfFilename(name = 'document') {
+  const rawName = String(name || 'document').trim();
+  const cleanName = rawName
+    .replace(/\.[pP][dD][fF]$/, '')
+    .replace(/[^a-zA-Z0-9-_]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+
+  return `${cleanName || 'document'}.pdf`;
 }
 
 export function resolveDocumentUrl(baseUrl, filePath) {

@@ -3,9 +3,44 @@ import axios from "axios";
 import config from "../Constants/config";
 import { FaFilePdf, FaTimes, FaDownload } from "react-icons/fa";
 import "../Css/DocumentManager.css";
-import { resolveDocumentUrl } from "../utils/documentUrl";
+import { buildPdfFilename, resolveDocumentUrl } from "../utils/documentUrl";
 
 const baseURL = `${config.baseUrl}/documents`;
+
+async function openPdfInNewTab(pdfUrl, fileName) {
+  const safeFilename = buildPdfFilename(fileName);
+  const response = await axios.get(pdfUrl, { responseType: 'blob' });
+  const blob = new Blob([response.data], {
+    type: response.headers['content-type'] || 'application/pdf',
+  });
+  const objectUrl = URL.createObjectURL(blob);
+  const newTab = window.open(objectUrl, '_blank', 'noopener,noreferrer');
+
+  if (newTab) {
+    newTab.document.title = safeFilename;
+  }
+
+  return objectUrl;
+}
+
+async function downloadPdfFile(pdfUrl, fileName) {
+  const safeFilename = buildPdfFilename(fileName);
+  const response = await axios.get(pdfUrl, { responseType: 'blob' });
+  const blob = new Blob([response.data], {
+    type: response.headers['content-type'] || 'application/pdf',
+  });
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  link.href = objectUrl;
+  link.download = safeFilename;
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+}
 
 function DocumentManager() {
   const [heading, setHeading] = useState("");
@@ -108,7 +143,7 @@ function DocumentManager() {
         ) : (
           documents.map((doc) => {
             const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
-            const pdfFileName = `${(doc.heading || 'document').replace(/[^a-z0-9-_]+/gi, '_')}.pdf`;
+            const pdfFileName = buildPdfFilename(doc.heading || 'document');
 
             return (
               <div className="doc-item" key={doc._id}>
@@ -122,25 +157,21 @@ function DocumentManager() {
 
                 <p>{doc.heading}</p>
 
-                <a
-                  href={pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download={pdfFileName}
+                <button
+                  type="button"
+                  onClick={() => openPdfInNewTab(pdfUrl, doc.heading)}
                   className="view-link"
                 >
                   View PDF
-                </a>
+                </button>
 
-                <a
-                  href={pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download={pdfFileName}
+                <button
+                  type="button"
+                  onClick={() => downloadPdfFile(pdfUrl, doc.heading)}
                   className="download-link"
                 >
                   <FaDownload /> Download
-                </a>
+                </button>
               </div>
             );
           })

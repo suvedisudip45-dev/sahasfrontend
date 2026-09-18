@@ -6,9 +6,44 @@ import config from "../Constants/config";
 import "../Css/Downloads.css";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { resolveDocumentUrl } from '../utils/documentUrl';
+import { buildPdfFilename, resolveDocumentUrl } from '../utils/documentUrl';
 
 const baseURL = `${config.baseUrl}/documents`;
+
+async function openPdfInNewTab(pdfUrl, fileName) {
+  const safeFilename = buildPdfFilename(fileName);
+  const response = await axios.get(pdfUrl, { responseType: 'blob' });
+  const blob = new Blob([response.data], {
+    type: response.headers['content-type'] || 'application/pdf',
+  });
+  const objectUrl = URL.createObjectURL(blob);
+  const newTab = window.open(objectUrl, '_blank', 'noopener,noreferrer');
+
+  if (newTab) {
+    newTab.document.title = safeFilename;
+  }
+
+  return objectUrl;
+}
+
+async function downloadPdfFile(pdfUrl, fileName) {
+  const safeFilename = buildPdfFilename(fileName);
+  const response = await axios.get(pdfUrl, { responseType: 'blob' });
+  const blob = new Blob([response.data], {
+    type: response.headers['content-type'] || 'application/pdf',
+  });
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  link.href = objectUrl;
+  link.download = safeFilename;
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+}
 
 function Downloads({ type }) {
   const [documents, setDocuments] = useState([]);
@@ -54,7 +89,7 @@ function Downloads({ type }) {
         <Row className="g-4 justify-content-center">
           {documents.map((doc, index) => {
             const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
-            const safeFileName = `${(doc.heading || 'document').replace(/[^a-z0-9-_]+/gi, '_')}.pdf`;
+            const safeFileName = buildPdfFilename(doc.heading || 'document');
 
             return (
               <Col key={index} xs={12} sm={6} md={4} lg={3}>
@@ -67,21 +102,15 @@ function Downloads({ type }) {
                     <div className="d-flex flex-column gap-2 mt-3" data-aos='fade-up'>
                       <Button
                         variant="primary"
-                        href={pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download={safeFileName}
                         className="w-100"
+                        onClick={() => openPdfInNewTab(pdfUrl, doc.heading)}
                       >
                         View PDF
                       </Button>
                       <Button
                         variant="outline-primary"
-                        href={pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download={safeFileName}
                         className="w-100"
+                        onClick={() => downloadPdfFile(pdfUrl, doc.heading)}
                       >
                         Download PDF
                       </Button>
