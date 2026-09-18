@@ -89,7 +89,8 @@ function Downloads({ type }) {
         <Row className="g-4 justify-content-center">
           {documents.map((doc, index) => {
             const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
-            const safeFileName = buildPdfFilename(doc.heading || 'document');
+            const displayFileName = doc.fileName || doc.originalFileName || doc.heading || 'document';
+            const safeFileName = buildPdfFilename(displayFileName);
 
             return (
               <Col key={index} xs={12} sm={6} md={4} lg={3}>
@@ -103,14 +104,14 @@ function Downloads({ type }) {
                       <Button
                         variant="primary"
                         className="w-100"
-                        onClick={() => openPdfInNewTab(pdfUrl, doc.heading)}
+                        onClick={() => openPdfInNewTab(pdfUrl, displayFileName)}
                       >
                         View PDF
                       </Button>
                       <Button
                         variant="outline-primary"
                         className="w-100"
-                        onClick={() => downloadPdfFile(pdfUrl, doc.heading)}
+                        onClick={() => downloadPdfFile(pdfUrl, displayFileName)}
                       >
                         Download PDF
                       </Button>

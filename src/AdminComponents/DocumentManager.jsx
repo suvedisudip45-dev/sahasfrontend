@@ -77,6 +77,7 @@ function DocumentManager() {
     const formData = new FormData();
     formData.append("heading", heading);
     formData.append("category", category);
+    formData.append("fileName", file.name);
     formData.append("file", file);
 
     try {
@@ -143,7 +144,8 @@ function DocumentManager() {
         ) : (
           documents.map((doc) => {
             const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
-            const pdfFileName = buildPdfFilename(doc.heading || 'document');
+            const displayFileName = doc.fileName || doc.originalFileName || doc.heading || 'document';
+            const pdfFileName = buildPdfFilename(displayFileName);
 
             return (
               <div className="doc-item" key={doc._id}>
@@ -159,7 +161,7 @@ function DocumentManager() {
 
                 <button
                   type="button"
-                  onClick={() => openPdfInNewTab(pdfUrl, doc.heading)}
+                  onClick={() => openPdfInNewTab(pdfUrl, displayFileName)}
                   className="view-link"
                 >
                   View PDF
@@ -167,7 +169,7 @@ function DocumentManager() {
 
                 <button
                   type="button"
-                  onClick={() => downloadPdfFile(pdfUrl, doc.heading)}
+                  onClick={() => downloadPdfFile(pdfUrl, displayFileName)}
                   className="download-link"
                 >
                   <FaDownload /> Download
