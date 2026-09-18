@@ -6,14 +6,14 @@ import axios from "axios";
 
 const TEAM_CATEGORY_ORDER = [
   'board-of-directors',
-  'advisory-committee',
   'account-committee',
+  'advisory-committee',
   'risk-management-committee',
   'loan-committee',
   'education-committee',
   'employees',
 ];
-
+sdf 
 // Map DB category values → Nepali labels
 const CATEGORY_LABELS = {
   'board-of-directors':          'संचालक समिति',
