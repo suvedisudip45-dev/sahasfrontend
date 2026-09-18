@@ -7,39 +7,74 @@ import { buildPdfFilename, resolveDocumentUrl } from "../utils/documentUrl";
 
 const baseURL = `${config.baseUrl}/documents`;
 
-async function openPdfInNewTab(pdfUrl, fileName) {
+async function openPdfInNewTab(pdfUrl, fileName, docId) {
   const safeFilename = buildPdfFilename(fileName);
-  const response = await axios.get(pdfUrl, { responseType: 'blob' });
-  const blob = new Blob([response.data], {
-    type: response.headers['content-type'] || 'application/pdf',
-  });
-  const objectUrl = URL.createObjectURL(blob);
-  const newTab = window.open(objectUrl, '_blank', 'noopener,noreferrer');
 
-  if (newTab) {
-    newTab.document.title = safeFilename;
+  if (docId) {
+    const viewUrl = `${baseURL}/view/${docId}`;
+    const newTab = window.open(viewUrl, '_blank', 'noopener,noreferrer');
+    if (newTab) {
+      newTab.document.title = safeFilename;
+      return viewUrl;
+    }
   }
 
-  return objectUrl;
+  try {
+    const response = await axios.get(pdfUrl, { responseType: 'blob' });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const objectUrl = URL.createObjectURL(blob);
+    const newTab = window.open(objectUrl, '_blank', 'noopener,noreferrer');
+
+    if (newTab) {
+      newTab.document.title = safeFilename;
+    }
+
+    return objectUrl;
+  } catch (err) {
+    console.error("Error loading PDF blob, opening direct URL:", err);
+    window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+  }
 }
 
-async function downloadPdfFile(pdfUrl, fileName) {
+async function downloadPdfFile(pdfUrl, fileName, docId) {
   const safeFilename = buildPdfFilename(fileName);
-  const response = await axios.get(pdfUrl, { responseType: 'blob' });
-  const blob = new Blob([response.data], {
-    type: response.headers['content-type'] || 'application/pdf',
-  });
-  const objectUrl = URL.createObjectURL(blob);
-  const link = document.createElement('a');
 
-  link.href = objectUrl;
-  link.download = safeFilename;
-  link.rel = 'noopener noreferrer';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  if (docId) {
+    const downloadUrl = `${baseURL}/download/${docId}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = safeFilename;
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    return;
+  }
 
-  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+  try {
+    const response = await axios.get(pdfUrl, { responseType: 'blob' });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = objectUrl;
+    link.download = safeFilename;
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 2000);
+  } catch (err) {
+    console.error("Error downloading PDF blob, attempting direct link:", err);
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = safeFilename;
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 }
 
 function DocumentManager() {
@@ -88,7 +123,8 @@ function DocumentManager() {
       await fetchDocuments();
     } catch (err) {
       console.error("Upload failed:", err);
-      alert("Failed to upload document.");
+      const errMsg = err?.response?.data?.message || "Failed to upload document.";
+      alert(errMsg);
     } finally {
       setLoading(false);
     }
@@ -127,7 +163,19 @@ function DocumentManager() {
         <input
           type="file"
           accept=".pdf,application/pdf"
-          onChange={(e) => setFile(e.target.files[0])}
+          onChange={(e) => {
+            const selected = e.target.files[0];
+            if (selected) {
+              const isPdf = selected.type === 'application/pdf' || selected.name.toLowerCase().endsWith('.pdf');
+              if (!isPdf) {
+                alert("Only PDF files (.pdf) are allowed.");
+                e.target.value = "";
+                setFile(null);
+                return;
+              }
+            }
+            setFile(selected);
+          }}
           required
         />
         {file && <small>Selected: {file.name}</small>}
@@ -161,7 +209,7 @@ function DocumentManager() {
 
                 <button
                   type="button"
-                  onClick={() => openPdfInNewTab(pdfUrl, displayFileName)}
+                  onClick={() => openPdfInNewTab(pdfUrl, displayFileName, doc._id)}
                   className="view-link"
                 >
                   View PDF
@@ -169,7 +217,7 @@ function DocumentManager() {
 
                 <button
                   type="button"
-                  onClick={() => downloadPdfFile(pdfUrl, displayFileName)}
+                  onClick={() => downloadPdfFile(pdfUrl, displayFileName, doc._id)}
                   className="download-link"
                 >
                   <FaDownload /> Download
