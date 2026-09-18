@@ -32,6 +32,13 @@ function DocumentManager() {
     e.preventDefault();
     if (!file) return alert("Please select a PDF file");
 
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    if (!isPdf) return alert("Only PDF files are allowed for reports and downloads.");
+
+    if (!['reports', 'downloads'].includes(category)) {
+      return alert("Category must be reports or downloads.");
+    }
+
     const formData = new FormData();
     formData.append("heading", heading);
     formData.append("category", category);
@@ -83,7 +90,7 @@ function DocumentManager() {
         </select>
         <input
           type="file"
-          accept="application/pdf"
+          accept=".pdf,application/pdf"
           onChange={(e) => setFile(e.target.files[0])}
           required
         />
@@ -101,6 +108,7 @@ function DocumentManager() {
         ) : (
           documents.map((doc) => {
             const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
+            const pdfFileName = `${(doc.heading || 'document').replace(/[^a-z0-9-_]+/gi, '_')}.pdf`;
 
             return (
               <div className="doc-item" key={doc._id}>
@@ -118,6 +126,7 @@ function DocumentManager() {
                   href={pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  download={pdfFileName}
                   className="view-link"
                 >
                   View PDF
@@ -125,9 +134,9 @@ function DocumentManager() {
 
                 <a
                   href={pdfUrl}
-                  download
                   target="_blank"
                   rel="noopener noreferrer"
+                  download={pdfFileName}
                   className="download-link"
                 >
                   <FaDownload /> Download

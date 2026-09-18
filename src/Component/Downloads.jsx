@@ -54,6 +54,7 @@ function Downloads({ type }) {
         <Row className="g-4 justify-content-center">
           {documents.map((doc, index) => {
             const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
+            const safeFileName = `${(doc.heading || 'document').replace(/[^a-z0-9-_]+/gi, '_')}.pdf`;
 
             return (
               <Col key={index} xs={12} sm={6} md={4} lg={3}>
@@ -69,6 +70,7 @@ function Downloads({ type }) {
                         href={pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        download={safeFileName}
                         className="w-100"
                       >
                         View PDF
@@ -78,7 +80,7 @@ function Downloads({ type }) {
                         href={pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        download
+                        download={safeFileName}
                         className="w-100"
                       >
                         Download PDF
