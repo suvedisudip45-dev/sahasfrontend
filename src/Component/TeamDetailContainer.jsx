@@ -4,6 +4,16 @@ import TeamDetail from "./TeamDetail";
 import config from "../Constants/config";
 import axios from "axios";
 
+const TEAM_CATEGORY_ORDER = [
+  'board-of-directors',
+  'account-committee',
+  'risk-management-committee',
+  'loan-committee',
+  'education-committee',
+  'advisory-committee',
+  'employees',
+];
+
 // Map DB category values → Nepali labels
 const CATEGORY_LABELS = {
   'board-of-directors':          'संचालक समिति',
@@ -16,9 +26,26 @@ const CATEGORY_LABELS = {
   'employees':                   'कर्मचारी',
 };
 
+function normalizeCategory(slug = '') {
+  if (!slug) return '';
+  const value = String(slug).trim();
+  return value === 'account-comittee' ? 'account-committee' : value;
+}
+
 function getCategoryLabel(slug) {
-  return CATEGORY_LABELS[slug] ||
-    slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const normalized = normalizeCategory(slug);
+  return CATEGORY_LABELS[normalized] ||
+    normalized.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function sortCategories(categories = []) {
+  return [...new Set(categories.map(normalizeCategory).filter(Boolean))].sort((a, b) => {
+    const indexA = TEAM_CATEGORY_ORDER.indexOf(a);
+    const indexB = TEAM_CATEGORY_ORDER.indexOf(b);
+    const safeA = indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA;
+    const safeB = indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB;
+    return safeA - safeB;
+  });
 }
 
 function TeamDetailContainer() {
@@ -40,7 +67,9 @@ function TeamDetailContainer() {
     );
   }
 
-  if (categories.length === 0) {
+  const orderedCategories = sortCategories(categories);
+
+  if (orderedCategories.length === 0) {
     return (
       <p className="text-center text-muted py-5">
         No team information available yet.
@@ -50,7 +79,7 @@ function TeamDetailContainer() {
 
   return (
     <Container className="py-4">
-      {categories.map((cat, idx) => (
+      {orderedCategories.map((cat) => (
         <div key={cat} className="mb-5">
           {/* Section heading */}
           <h5
