@@ -6,6 +6,7 @@ import config from "../Constants/config";
 import "../Css/Downloads.css";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { resolveDocumentUrl } from '../utils/documentUrl';
 
 const baseURL = `${config.baseUrl}/documents`;
 
@@ -61,7 +62,7 @@ function Downloads({ type }) {
                   </div>
                   <Button
                     variant="outline-primary"
-                    href={`${config.baseUrl}${doc.filePath}`} 
+                    href={resolveDocumentUrl(config.baseUrl, doc.filePath)}
                     target="_blank"
                     rel="noopener noreferrer"
                     download

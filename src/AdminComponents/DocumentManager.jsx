@@ -3,6 +3,7 @@ import axios from "axios";
 import config from "../Constants/config";
 import { FaFilePdf, FaTimes, FaDownload } from "react-icons/fa";
 import "../Css/DocumentManager.css";
+import { resolveDocumentUrl } from "../utils/documentUrl";
 
 const baseURL = `${config.baseUrl}/documents`;
 
@@ -112,7 +113,7 @@ function DocumentManager() {
 
               {/* View PDF (open in new tab) */}
               <a
-                href={`${config.baseUrl}${doc.filePath}`}
+                href={resolveDocumentUrl(config.baseUrl, doc.filePath)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="view-link"
@@ -122,7 +123,7 @@ function DocumentManager() {
 
               {/* Download PDF directly */}
               <a
-                href={`${config.baseUrl}${doc.filePath}`}
+                href={resolveDocumentUrl(config.baseUrl, doc.filePath)}
                 download
                 className="download-link"
               >
