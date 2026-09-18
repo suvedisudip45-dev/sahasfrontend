@@ -13,7 +13,6 @@ const TEAM_CATEGORY_ORDER = [
   'education-committee',
   'employees',
 ];
-sdf 
 // Map DB category values → Nepali labels
 const CATEGORY_LABELS = {
   'board-of-directors':          'संचालक समिति',
