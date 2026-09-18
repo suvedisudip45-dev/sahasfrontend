@@ -52,29 +52,43 @@ function Downloads({ type }) {
         </p>
       ) : (
         <Row className="g-4 justify-content-center">
-          {documents.map((doc, index) => (
-            <Col key={index} xs={12} sm={6} md={4} lg={3}>
-              <Card className="h-100 text-center shadow-sm border-0">
-                <Card.Body className="d-flex flex-column justify-content-between">
-                  <div>
-                    <FaFilePdf size={48} color="#e63946" className="mb-3" />
-                    <Card.Title className="fs-5">{doc.heading}</Card.Title>
-                  </div>
-                  <Button
-                    variant="outline-primary"
-                    href={resolveDocumentUrl(config.baseUrl, doc.filePath)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
-                    className="mt-3"
-                    data-aos='fade-up'
-                  >
-                    Download PDF
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+          {documents.map((doc, index) => {
+            const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
+
+            return (
+              <Col key={index} xs={12} sm={6} md={4} lg={3}>
+                <Card className="h-100 text-center shadow-sm border-0">
+                  <Card.Body className="d-flex flex-column justify-content-between">
+                    <div>
+                      <FaFilePdf size={48} color="#e63946" className="mb-3" />
+                      <Card.Title className="fs-5">{doc.heading}</Card.Title>
+                    </div>
+                    <div className="d-flex flex-column gap-2 mt-3" data-aos='fade-up'>
+                      <Button
+                        variant="primary"
+                        href={pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-100"
+                      >
+                        View PDF
+                      </Button>
+                      <Button
+                        variant="outline-primary"
+                        href={pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download
+                        className="w-100"
+                      >
+                        Download PDF
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
         </Row>
       )}
     </Container>

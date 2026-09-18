@@ -99,38 +99,42 @@ function DocumentManager() {
         {documents.length === 0 ? (
           <p>No {category} documents available.</p>
         ) : (
-          documents.map((doc) => (
-            <div className="doc-item" key={doc._id}>
-              <button
-                className="delete-btn"
-                onClick={() => handleDelete(doc._id, doc.filePath)}
-              >
-                <FaTimes />
-              </button>
-              <FaFilePdf size={30} color="red" />
+          documents.map((doc) => {
+            const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
 
-              <p>{doc.heading}</p>
+            return (
+              <div className="doc-item" key={doc._id}>
+                <button
+                  className="delete-btn"
+                  onClick={() => handleDelete(doc._id, doc.filePath)}
+                >
+                  <FaTimes />
+                </button>
+                <FaFilePdf size={30} color="red" />
 
-              {/* View PDF (open in new tab) */}
-              <a
-                href={resolveDocumentUrl(config.baseUrl, doc.filePath)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="view-link"
-              >
-                View PDF
-              </a>
+                <p>{doc.heading}</p>
 
-              {/* Download PDF directly */}
-              <a
-                href={resolveDocumentUrl(config.baseUrl, doc.filePath)}
-                download
-                className="download-link"
-              >
-                <FaDownload /> Download
-              </a>
-            </div>
-          ))
+                <a
+                  href={pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="view-link"
+                >
+                  View PDF
+                </a>
+
+                <a
+                  href={pdfUrl}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="download-link"
+                >
+                  <FaDownload /> Download
+                </a>
+              </div>
+            );
+          })
         )}
       </div>
     </div>
