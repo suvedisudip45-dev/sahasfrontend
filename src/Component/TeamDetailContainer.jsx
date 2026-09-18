@@ -6,23 +6,23 @@ import axios from "axios";
 
 const TEAM_CATEGORY_ORDER = [
   'board-of-directors',
+  'advisory-committee',
   'account-committee',
   'risk-management-committee',
   'loan-committee',
   'education-committee',
-  'advisory-committee',
   'employees',
 ];
 
 // Map DB category values → Nepali labels
 const CATEGORY_LABELS = {
   'board-of-directors':          'संचालक समिति',
-  'account-committee':           'लेखा साखा',
-  'account-comittee':            'लेखा साखा',           // backward-compat typo
+  'account-committee':           'लेखा समिति',
+  'account-comittee':            'लेखा समिति',           // backward-compat typo
   'risk-management-committee':   'बिपद् व्यवस्थापन उप-समिति',
   'loan-committee':              'ऋण उप-समिति',
   'education-committee':         'शिक्षा उप-समिति',
-  'advisory-committee':          'सल्लाहकार समिति',
+  'advisory-committee':          'सल्लाहकार',
   'employees':                   'कर्मचारी',
 };
 

@@ -14,11 +14,11 @@ const TeamDetail = () => {
 
   const categories = [
     { label: 'Board of Directors (संचालक समिति)', value: 'board-of-directors' },
-    { label: 'Account Committee (लेखा साखा)', value: 'account-committee' },
+    { label: 'Advisory Committee (सल्लाहकार)', value: 'advisory-committee' },
+    { label: 'Account Committee (लेखा समिति)', value: 'account-committee' },
     { label: 'Risk Management Committee (बिपद् व्यवस्थापन उप-समिति)', value: 'risk-management-committee' },
     { label: 'Loan Sub-Committee (ऋण उप-समिति)', value: 'loan-committee' },
     { label: 'Education Sub-Committee (शिक्षा उप-समिति)', value: 'education-committee' },
-    { label: 'Advisory Committee (सल्लाहकार समिति)', value: 'advisory-committee' },
     { label: 'Employees (कर्मचारी)', value: 'employees' },
   ];
 
