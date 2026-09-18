@@ -3,6 +3,7 @@
   publish = "build"
 
 [build.environment]
+  CI = "false"
   NODE_VERSION = "18.20.4"
 
 [[redirects]]

@@ -125,7 +125,6 @@ function Downloads({ type }) {
           {documents.map((doc, index) => {
             const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
             const displayFileName = doc.fileName || doc.originalFileName || doc.heading || 'document';
-            const safeFileName = buildPdfFilename(displayFileName);
 
             return (
               <Col key={index} xs={12} sm={6} md={4} lg={3}>

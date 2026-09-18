@@ -193,7 +193,6 @@ function DocumentManager() {
           documents.map((doc) => {
             const pdfUrl = resolveDocumentUrl(config.baseUrl, doc.filePath);
             const displayFileName = doc.fileName || doc.originalFileName || doc.heading || 'document';
-            const pdfFileName = buildPdfFilename(displayFileName);
 
             return (
               <div className="doc-item" key={doc._id}>
